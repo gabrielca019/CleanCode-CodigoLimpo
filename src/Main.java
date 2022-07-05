@@ -10,47 +10,73 @@ public class Main {
 
 	public static void main(String[] args) {		
 		do {
-			opcao = Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("Selecionar operação \n" //menu
-								  	  + "1 - Cadastrar produto \n"
-								  	  + "2 - Listar produtos \n"
-								  	  + "3 - Editar produto \n"
-								  	  + "4 - Excluir produto \n"
-								  	  + "Outro  - Sair")));
-			switch (opcao) {
-				case 1: //cadastrar
-					String nome = pegarNomeProduto();
-					double preco = pegarPrecoProduto();
-					int quantidade = pegarQuantidadeProduto();
-					int id = pegarIdProduto(estoque);
-					estoque.add(new Produto(id, nome, preco, quantidade));
-					break;
-				case 2: //listar
-					String lista = "";
-					for(Produto p : estoque)
-						lista += p.toString() + "\n";
-						JOptionPane.showMessageDialog(null, lista);
-					break;
-				case 3: //editar
-					int idEditar = Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto:")));
-					String nomeEditar = pegarNomeProduto();
-					double precoEditar = pegarPrecoProduto();
-					int quantidadeEditar = pegarQuantidadeProduto();
-					produto = new Produto(idEditar, nomeEditar, precoEditar, quantidadeEditar);
-					estoque.set((idEditar-1), produto);
-					break;
-				case 4: //excluir
-					if(!(estoque.size() == 0)) {
-						int remover = Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto: "))) - 1;
-						estoque.remove(remover);
-					} else {
-						JOptionPane.showMessageDialog(null, "A lista de produtos está vazia");
-					}
-					break;
-				default:
-					opcao = 0;
-					break;
-			}
+			selecionarOpcao();
+			realizarOpcao();
 		} while(opcao != 0); //voltar para o menu
+	}
+	
+	public static void selecionarOpcao() {
+		opcao = Integer.parseInt(
+				String.valueOf(
+				JOptionPane.showInputDialog(
+					"Selecionar operação \n" //menu
+			  	  + "1 - Cadastrar produto \n"
+			  	  + "2 - Listar produtos \n"
+			  	  + "3 - Editar produto \n"
+			  	  + "4 - Excluir produto \n"
+			  	  + "Outro  - Sair")));
+	}
+	
+	public static void realizarOpcao() {
+		switch (opcao) {
+		case 1: //cadastrar
+			estoque.add(cadastrarProduto());
+			break;
+		case 2: //listar
+			JOptionPane.showMessageDialog(null, listarProduto());
+			break;
+		case 3: //editar
+			int id = Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto:"))) - 1;
+			estoque.set((id), editarProduto(id));
+			break;
+		case 4: //excluir
+			estoque.remove(excluirProduto());
+			break;
+		default:
+			opcao = 0;
+			break;
+		}
+	}
+	
+	public static Produto cadastrarProduto() {
+		String nome = pegarNomeProduto();
+		double preco = pegarPrecoProduto();
+		int quantidade = pegarQuantidadeProduto();
+		int id = pegarIdProduto();
+		return new Produto(id, nome, preco, quantidade);
+	}
+	
+	public static String listarProduto() {
+		String lista = "";
+		for(Produto p : estoque)
+			lista += p.toString() + "\n";
+		return lista;
+	}
+	
+	public static Produto editarProduto(int id) {
+		String nome = pegarNomeProduto();
+		double preco = pegarPrecoProduto();
+		int quantidade = pegarQuantidadeProduto();
+		return new Produto(id, nome, preco, quantidade);
+	}
+	
+	public static int excluirProduto() {
+		if(!(estoque.size() == 0)) {
+			return Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto: "))) - 1;
+		} else {
+			JOptionPane.showMessageDialog(null, "A lista de produtos está vazia");
+			return 0;
+		}
 	}
 	
 	public static String pegarNomeProduto() {
@@ -65,8 +91,8 @@ public class Main {
 		return Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("Quantidade em estoque:")));
 	}
 	
-	public static int pegarIdProduto(ArrayList<Produto> estoque) {
+	public static int pegarIdProduto() {
 		return estoque.size();
 	}
-
+	
 }
