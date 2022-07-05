@@ -28,24 +28,14 @@ public class Main {
 	}
 	
 	public static void realizarOpcao() {
-		switch (opcao) {
-		case 1: //cadastrar
+		if(opcao == 1) 
 			estoque.add(cadastrarProduto());
-			break;
-		case 2: //listar
-			JOptionPane.showMessageDialog(null, listarProduto());
-			break;
-		case 3: //editar
-			int id = Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto:"))) - 1;
-			estoque.set((id), editarProduto(id));
-			break;
-		case 4: //excluir
-			estoque.remove(excluirProduto());
-			break;
-		default:
-			opcao = 0;
-			break;
-		}
+		else if(opcao == 2)
+			JOptionPane.showMessageDialog(null, estoque);
+		else if(opcao == 3)
+			estoque.set((produto.getId()), editarProduto());
+		else if(opcao == 4)
+			estoque.remove(produto.getId());
 	}
 	
 	public static Produto cadastrarProduto() {
@@ -63,19 +53,19 @@ public class Main {
 		return lista;
 	}
 	
-	public static Produto editarProduto(int id) {
+	public static Produto editarProduto() {
+		selecionarIdProduto();
 		String nome = pegarNomeProduto();
 		double preco = pegarPrecoProduto();
 		int quantidade = pegarQuantidadeProduto();
-		return new Produto(id, nome, preco, quantidade);
+		return new Produto(produto.getId(), nome, preco, quantidade);
 	}
 	
-	public static int excluirProduto() {
+	public static void excluirProduto() {
 		if(!(estoque.size() == 0)) {
-			return Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto: "))) - 1;
+			selecionarIdProduto();
 		} else {
 			JOptionPane.showMessageDialog(null, "A lista de produtos está vazia");
-			return 0;
 		}
 	}
 	
@@ -95,4 +85,7 @@ public class Main {
 		return estoque.size();
 	}
 	
+	public static void selecionarIdProduto() {
+		produto.setId(Integer.parseInt(String.valueOf(JOptionPane.showInputDialog("ID do produto: "))) - 1);
+	}
 }
