@@ -10,12 +10,12 @@ public class Main {
 
 	public static void main(String[] args) {		
 		do {
-			selecionarOpcao();
-			realizarOpcao();
+			exibirMenuParaSelecionarOpcao();
+			realizarOpcaoMenu();
 		} while(opcao != 0); //voltar para o menu
 	}
 	
-	public static void selecionarOpcao() {
+	public static void exibirMenuParaSelecionarOpcao() {
 		opcao = Integer.parseInt(
 				String.valueOf(
 				JOptionPane.showInputDialog(
@@ -27,45 +27,72 @@ public class Main {
 			  	  + "Outro  - Sair")));
 	}
 	
-	public static void realizarOpcao() {
+	public static void realizarOpcaoMenu() {
 		if(opcao == 1) 
-			estoque.add(cadastrarProduto());
+			CadastrarProduto();
 		else if(opcao == 2)
-			JOptionPane.showMessageDialog(null, estoque);
+			listarProdutos();
 		else if(opcao == 3)
-			estoque.set((produto.getId()), editarProduto());
+			editarProduto();
 		else if(opcao == 4)
-			estoque.remove(produto.getId());
+			excluirProduto();
 	}
 	
-	public static Produto cadastrarProduto() {
-		String nome = pegarNomeProduto();
-		double preco = pegarPrecoProduto();
-		int quantidade = pegarQuantidadeProduto();
-		int id = pegarIdProduto();
-		return new Produto(id, nome, preco, quantidade);
+	private static void CadastrarProduto() {
+		estoque.add(gerarProdutoParaCadastro());	
+	}
+
+	public static Produto gerarProdutoParaCadastro() {
+		return new Produto(pegarIdProduto(), 
+							pegarNomeProduto(), 
+							pegarPrecoProduto(), 
+							pegarQuantidadeProduto());
 	}
 	
-	public static String listarProduto() {
+	public static void listarProdutos() {
+		JOptionPane.showMessageDialog(null, gerarListaTodosProdutosCadastrados());
+	}
+	
+	public static String gerarListaTodosProdutosCadastrados() {
 		String lista = "";
 		for(Produto p : estoque)
 			lista += p.toString() + "\n";
 		return lista;
 	}
 	
-	public static Produto editarProduto() {
+	public static void editarProduto() {
+		if(validarOpcaoCasoListaVazia())
+			estoque.set((produto.getId()), gerarProdutoParaEditar());
+	}
+	
+	public static Produto gerarProdutoParaEditar() {
 		selecionarIdProduto();
-		String nome = pegarNomeProduto();
-		double preco = pegarPrecoProduto();
-		int quantidade = pegarQuantidadeProduto();
-		return new Produto(produto.getId(), nome, preco, quantidade);
+		return new Produto(produto.getId(), 
+							pegarNomeProduto(), 
+							pegarPrecoProduto(), 
+							pegarQuantidadeProduto());
+	}
+	
+	public static boolean validarOpcaoCasoListaVazia() {
+		if(!verificarListaVazia()) {
+			selecionarIdProduto();
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public static void excluirProduto() {
-		if(!(estoque.size() == 0)) {
-			selecionarIdProduto();
-		} else {
+		if(validarOpcaoCasoListaVazia())
+			estoque.remove(produto.getId());
+	}
+	
+	public static boolean verificarListaVazia() {
+		if(estoque.size() == 0) {
 			JOptionPane.showMessageDialog(null, "A lista de produtos está vazia");
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
